@@ -1,14 +1,14 @@
-//src\app\layout.tsx
-
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { Toaster } from 'react-hot-toast'
+// 1. IMPORT THE ANALYTICS COMPONENT
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Dating Safety & Trust AI - Protect Your Heart',
+  title: 'Swipe Safe - Protect Your Heart',
   description: 'AI-powered dating safety tool that analyzes conversations to protect against scams and manipulation while highlighting trust signals.',
   keywords: 'dating safety, online dating, scam protection, relationship health, AI analysis',
 }
@@ -42,6 +42,9 @@ export default function RootLayout({
           }}
         />
         {children}
+        
+        {/* 2. ADD THE COMPONENT WITH YOUR ID */}
+        <GoogleAnalytics gaId="G-3J7SQ7MSHB" />
       </body>
     </html>
   )
