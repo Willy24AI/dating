@@ -8,3 +8,4 @@ export default function DashboardPage() {
   // It's good practice to return null or a loading indicator.
   return null;
 }
+

@@ -111,6 +111,7 @@ export default function HomePage() {
                 <a href="#features" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">Features</a>
                 <a href="#how-it-works" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">How It Works</a>
                 <a href="#faq" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">FAQ</a>
+                <a href="/about" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">About Us</a>
               </div>
               <div className="flex items-center">
                 <a
@@ -230,6 +231,7 @@ export default function HomePage() {
                 <a href="#features" className="text-sm leading-6 text-gray-600 hover:text-gray-900">Features</a>
                 <a href="#how-it-works" className="text-sm leading-6 text-gray-600 hover:text-gray-900">How It Works</a>
                 <a href="#faq" className="text-sm leading-6 text-gray-600 hover:text-gray-900">FAQ</a>
+                <a href="/about" className="text-sm leading-6 text-gray-600 hover:text-gray-900">About Us</a>
             </nav>
             <p className="text-center text-xs leading-5 text-gray-500">
                 &copy; {new Date().getFullYear()} Swipe Safe. All rights reserved.
