@@ -1,8 +1,6 @@
 'use client';
 
-import { ShieldCheck, Sparkles, BarChart2, ArrowRight, Bot, MessageSquare, ScanSearch, Check } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import Image from 'next/image';
 
 // Data for sections - easy to update
 const features = [
@@ -62,13 +60,11 @@ const faqs = [
 
 const AppLogos = () => (
     <div className="mt-12 flex justify-center items-center gap-x-8 sm:gap-x-12 grayscale opacity-60">
-<img className="h-8 sm:h-10" src="/images/apps/tinder.png" alt="Tinder" />        
-<img className="h-8 sm:h-10" src="/images/apps/Bumble.png" alt="Bumble" />        
-        {/* Updated Hinge Logo Path */}
-        <img className="h-7 sm:h-9" src="/images/apps/hinge.png" alt="Hinge" />
-        
-        <img className="h-8 sm:h-10" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/1024px-WhatsApp.svg.png" alt="WhatsApp" />
-        <img className="h-7 sm:h-9" src="/images/apps/imessage.png" alt="Imessage" />
+<Image className="h-8 sm:h-10" src="/images/apps/tinder.png" alt="Tinder" width={100} height={40} />
+<Image className="h-8 sm:h-10" src="/images/apps/Bumble.png" alt="Bumble" width={100} height={40} />
+<Image className="h-7 sm:h-9" src="/images/apps/hinge.png" alt="Hinge" width={100} height={36} />
+<Image className="h-8 sm:h-10" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/1024px-WhatsApp.svg.png" alt="WhatsApp" width={100} height={40} />
+<Image className="h-7 sm:h-9" src="/images/apps/imessage.png" alt="Imessage" width={100} height={36} />
     </div>
 )
 

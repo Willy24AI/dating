@@ -67,7 +67,7 @@ export default function DashboardClientPage({
 
       // Cleanup function to cancel the timer if messages change again quickly.
       return () => clearTimeout(handler);
-  }, [messages, sessionId]); // Rerun this effect if messages or sessionId change
+    }, [messages, sessionId, saveChatHistory]); // Rerun this effect if messages or sessionId change
 
   // When the session ID changes, reset messages to the new initial messages
   useEffect(() => {

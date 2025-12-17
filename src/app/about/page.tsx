@@ -47,7 +47,7 @@ export default function AboutPage() {
                         We believe everyone deserves to date with confidence. Navigating modern dating can be confusing, which is why we created an AI companion to help you read between the lines.
                     </p>
                     <p className="mt-4 text-lg leading-8 text-gray-600">
-                        Whether you're chatting on dating apps or texting on WhatsApp, our tool analyzes the tone and context of your conversations to reveal what’s really going on. We help you spot:
+                                                Whether you&apos;re chatting on dating apps or texting on WhatsApp, our tool analyzes the tone and context of your conversations to reveal what’s really going on. We help you spot:
                     </p>
                     <ul className="mt-6 space-y-4 text-lg text-gray-600">
                         <li className="flex items-start">
