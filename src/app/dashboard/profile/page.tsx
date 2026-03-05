@@ -10,9 +10,9 @@ import SignOutButton from '@/components/SignOutButton';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
+// ... (DeleteConfirmationModal code stays exactly the same) ...
 const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm, isDeleting }: { isOpen: boolean, onClose: () => void, onConfirm: () => void, isDeleting: boolean }) => {
   if (!isOpen) return null;
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-8 shadow-xl max-w-md w-full">
@@ -46,6 +46,7 @@ export default function ProfilePage() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isRedirectingToStripe, setIsRedirectingToStripe] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -114,8 +115,24 @@ export default function ProfilePage() {
   };
 
   const handleManageSubscription = async () => {
-    // Placeholder for when you implement Stripe/LemonSqueezy
-    toast.success('Subscription management coming soon!');
+    setIsRedirectingToStripe(true);
+    try {
+      const response = await fetch('/api/stripe/manage', {
+        method: 'POST',
+      });
+      const data = await response.json();
+      
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        toast.error('Failed to initiate subscription.');
+        setIsRedirectingToStripe(false);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Something went wrong.');
+      setIsRedirectingToStripe(false);
+    }
   };
 
   if (loading) {
@@ -140,6 +157,7 @@ export default function ProfilePage() {
         <SignOutButton />
       </div>
 
+      {/* Profile Form */}
       <div className="bg-white p-8 rounded-lg shadow-md border border-gray-200 mb-8">
         <form onSubmit={handleUpdateProfile} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -183,21 +201,30 @@ export default function ProfilePage() {
         </form>
       </div>
 
+      {/* Subscription Section */}
       <div className="bg-white p-8 rounded-lg shadow-md border border-gray-200">
         <div className="flex justify-between items-center">
           <div>
             <h2 className="text-xl font-bold text-gray-900">Subscription Plan</h2>
-            <p className="mt-1 text-gray-600">You are currently on the <span className="font-semibold text-blue-600 capitalize">{profile.subscription}</span> plan.</p>
+            <p className="mt-1 text-gray-600">
+              Status: <span className={`font-semibold capitalize ${
+                profile.subscription_status === 'active' ? 'text-green-600' : 'text-gray-500'
+              }`}>
+                {profile.subscription_status || 'Free'}
+              </span>
+            </p>
           </div>
           <button 
             onClick={handleManageSubscription}
-            className="px-6 py-2 bg-gray-800 text-white font-semibold rounded-lg shadow-sm hover:bg-gray-900"
+            disabled={isRedirectingToStripe}
+            className="px-6 py-2 bg-gray-800 text-white font-semibold rounded-lg shadow-sm hover:bg-gray-900 disabled:opacity-70"
           >
-            Manage Subscription
+            {isRedirectingToStripe ? 'Loading...' : (profile.subscription_status === 'active' ? 'Manage Subscription' : 'Upgrade Plan')}
           </button>
         </div>
       </div>
 
+      {/* Delete Account Section */}
       <div className="bg-white p-8 rounded-lg shadow-md border border-red-500 border-opacity-50 mt-8">
         <div className="flex justify-between items-center">
           <div>

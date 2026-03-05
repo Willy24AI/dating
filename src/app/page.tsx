@@ -1,7 +1,17 @@
 'use client';
 
 import Image from 'next/image';
-
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  ShieldCheck, 
+  Sparkles, 
+  BarChart2, 
+  ScanSearch, 
+  Bot, 
+  Check, 
+  ArrowRight 
+} from 'lucide-react';
 // Data for sections - easy to update
 const features = [
   {

@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import ChatInterface from '@/components/ChatInterface';
 import AnalysisDashboard from '@/components/AnalysisDashboard';
 import SenderConfigModal from '@/components/SenderConfigModal';
@@ -33,7 +33,7 @@ export default function DashboardClientPage({
     initialMessages: Message[];
 }) {
   const [user, setUser] = useState<User | null>(null);
-  const [messages, setMessages] = useState<Message[]>(initialMessages); // State is now managed here
+  const [messages, setMessages] = useState<Message[]>(initialMessages); 
   const [isProcessing, setIsProcessing] = useState(false);
   const [activeAnalysis, setActiveAnalysis] = useState<AnalysisResult | null>(null);
   const [showFullAnalysis, setShowFullAnalysis] = useState(false);
@@ -50,6 +50,41 @@ export default function DashboardClientPage({
     };
     fetchUser();
   }, [supabase.auth]);
+
+  // FIX: Define saveChatHistory BEFORE the useEffect that uses it.
+  // We use useCallback to ensure the function reference remains stable.
+  const saveChatHistory = useCallback(async (currentMessages: Message[]) => {
+      // Don't save if there's no session or the message list is empty/default.
+      if (!sessionId || !user || currentMessages.length === 0 || (currentMessages.length === 1 && currentMessages[0].id === '1')) return;
+
+      try {
+          // Prepare messages for storage, converting Date objects to ISO strings
+          // and linking analysis results by ID instead of embedding the whole object.
+          const messagesToStore = currentMessages.map(msg => ({
+              ...msg,
+              timestamp: msg.timestamp.toISOString(),
+              // If there's an analysisResult, only store its ID.
+              analysisResult: undefined, 
+              analysisResultId: msg.analysisResult?.id,
+          }));
+          
+          // Upsert the entire message history for the session.
+          // 'onConflict' ensures that if a record for this session_id already exists, it gets updated.
+          const { error } = await supabase.from('chat_history').upsert({
+              session_id: sessionId,
+              user_id: user.id,
+              messages: messagesToStore,
+          }, { onConflict: 'session_id' });
+
+          if (error) throw error;
+
+          console.log("Chat history saved successfully.");
+
+      } catch (error) {
+          console.error("Error saving chat history:", error);
+          toast.error("Could not save chat history.");
+      }
+  }, [sessionId, user, supabase]);
 
   // Debounced effect to save chat history whenever messages change
   useEffect(() => {
@@ -84,39 +119,6 @@ export default function DashboardClientPage({
         setActiveAnalysis(null);
     }
   }, [initialMessages, sessionId]);
-
-  const saveChatHistory = async (currentMessages: Message[]) => {
-      // Don't save if there's no session or the message list is empty/default.
-      if (!sessionId || !user || currentMessages.length === 0 || currentMessages.length === 1 && currentMessages[0].id === '1') return;
-
-      try {
-          // Prepare messages for storage, converting Date objects to ISO strings
-          // and linking analysis results by ID instead of embedding the whole object.
-          const messagesToStore = currentMessages.map(msg => ({
-              ...msg,
-              timestamp: msg.timestamp.toISOString(),
-              // If there's an analysisResult, only store its ID.
-              analysisResult: undefined, 
-              analysisResultId: msg.analysisResult?.id,
-          }));
-          
-          // Upsert the entire message history for the session.
-          // 'onConflict' ensures that if a record for this session_id already exists, it gets updated.
-          const { error } = await supabase.from('chat_history').upsert({
-              session_id: sessionId,
-              user_id: user.id,
-              messages: messagesToStore,
-          }, { onConflict: 'session_id' });
-
-          if (error) throw error;
-
-          console.log("Chat history saved successfully.");
-
-      } catch (error) {
-          console.error("Error saving chat history:", error);
-          toast.error("Could not save chat history.");
-      }
-  };
 
   const saveAnalysisResult = async (result: AnalysisResult, session_id: string): Promise<string | null> => {
     if (!user) return null;
